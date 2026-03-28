@@ -95,6 +95,20 @@ Place them in the root directory before running the project.
 
 ---
 
+## 📊 YOLO Model Comparison (CPU-Based)
+
+| Model   | Size        | Accuracy (mAP approx) | CPU Speed        | CPU Load            |
+|---------|------------|----------------------|------------------|---------------------|
+| YOLOv8n | Very Small | Low (~37–40%)        | ⚡ Very Fast      | 🟢 Low              |
+| YOLOv8s | Small      | Medium (~45–50%)     | ⚡ Fast           | 🟡 Medium           |
+| YOLOv8m | Medium     | Good (~50–55%)       | ⚡ Moderate       | 🟠 High             |
+| YOLOv8l | Large      | High (~55–60%)       | 🐢 Slow           | 🔴 Very High        |
+| YOLOv8x | Very Large | Very High (~60%+)    | 🐢 Very Slow      | 🔴 Extremely High   |
+
+> ⭐ YOLOv8m provides the best balance between accuracy and performance on CPU-based systems.
+
+---
+
 ## 🎥 Demo
 
 ### Object Detection Results
