@@ -97,11 +97,13 @@ Place them in the root directory before running the project.
 
 ## 🎥 Demo
 
-> Add your sample output images/videos here
-> Example:
+### Object Detection Results
 
-* Input → Output detection comparison
-* Annotated frames with bounding boxes
+#### Sample 1
+![Output 1](assets/output_sample1.png)
+
+#### Sample 2
+![Output 2](assets/output_sample2.png)
 
 ---
 
