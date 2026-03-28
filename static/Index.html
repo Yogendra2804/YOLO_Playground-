@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO26 Animal Detection</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #0b0b0b;
+            color: #e5e5e5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Main Wrapper */
+        .wrapper {
+            width: 950px;
+            height: 550px;
+            background: #141414;
+            border-radius: 25px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid #222;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 45%;
+            background: #101010;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid #222;
+        }
+
+        .left-panel h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .left-panel p {
+            color: #888;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            width: 55%;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Upload Box */
+        .upload-box {
+            width: 100%;
+            padding: 40px;
+            border: 2px dashed #333;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-box:hover {
+            border-color: #666;
+            background: #1b1b1b;
+        }
+
+        .upload-box p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Button */
+        .detect-btn {
+            margin-top: 25px;
+            padding: 14px 40px;
+            background: #f1f1f1;
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .detect-btn:hover {
+            background: #ccc;
+            transform: scale(1.03);
+        }
+
+        /* Status */
+        #status {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Preview */
+        .preview {
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 15px;
+            display: none;
+            border: 1px solid #333;
+        }
+
+        /* Loading */
+        .loading {
+            margin-top: 15px;
+            color: #888;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <!-- Left Info Panel -->
+        <div class="left-panel">
+            <h1>YOLO26 AI Detection</h1>
+            <p>
+                Upload an image or video to detect animals using our trained YOLO model.
+                The system identifies and counts detected objects automatically.
+            </p>
+        </div>
+
+        <!-- Right Upload Panel -->
+        <div class="right-panel">
+
+            <label class="upload-box">
+                <p>Click or Drag & Drop Image / Video</p>
+                <input type="file" id="file" accept="image/*,video/*">
+            </label>
+
+            <button class="detect-btn" onclick="upload()">Detect</button>
+
+            <div class="loading" id="loading">Processing...</div>
+
+            <div id="status"></div>
+
+            <img id="imagePreview" class="preview">
+            <video id="videoPreview" class="preview" controls></video>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const fileInput = document.getElementById("file");
+        const imagePreview = document.getElementById("imagePreview");
+        const videoPreview = document.getElementById("videoPreview");
+        const statusText = document.getElementById("status");
+        const loading = document.getElementById("loading");
+
+        let selectedFile = null;
+
+        fileInput.addEventListener("change", function () {
+            selectedFile = this.files[0];
+            showPreview(selectedFile);
+        });
+
+        function showPreview(file) {
+
+            if (!file) return;
+
+            imagePreview.style.display = "none";
+            videoPreview.style.display = "none";
+
+            let url = URL.createObjectURL(file);
+
+            if (file.type.startsWith("image")) {
+                imagePreview.src = url;
+                imagePreview.style.display = "block";
+            }
+            else {
+                videoPreview.src = url;
+                videoPreview.style.display = "block";
+            }
+        }
+
+        function upload() {
+
+            if (!selectedFile) {
+                alert("Select a file first!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", selectedFile);
+
+            loading.style.display = "block";
+            statusText.innerText = "";
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    loading.style.display = "none";
+
+                    let resultText = "";
+
+                    if (data.animal.length === 0) {
+                        resultText = "No objects detected.";
+                    } else {
+                        data.animal.forEach(animal => {
+                            resultText += animal + " : " + data.count[animal] + " | ";
+                        });
+                    }
+
+                    statusText.innerText = resultText;
+
+                    if (selectedFile.type.startsWith("image")) {
+                        imagePreview.src = "/output/" + data.file;
+                        imagePreview.style.display = "block";
+                    }
+                    else {
+                        videoPreview.src = "/output/" + data.file;
+                        videoPreview.style.display = "block";
+                    }
+
+                })
+                .catch(() => {
+                    loading.style.display = "none";
+                    alert("Error occurred!");
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>

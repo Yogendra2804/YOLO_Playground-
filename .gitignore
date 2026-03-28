@@ -1,0 +1,13 @@
+YOLO_PreTrained/
+venv/
+__pycache__/
+*.pyc
+runs/
+output/
+input_media/
+dataset/
+*.pt
+.env
+DomesticAnimal/
+WildAnimal/
+uploads/
