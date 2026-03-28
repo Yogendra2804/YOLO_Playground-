@@ -109,6 +109,25 @@ Place them in the root directory before running the project.
 
 ---
 
+## 📂 Dataset
+
+This project uses the YOLO Playground dataset for testing and evaluation.
+
+🔗 Dataset Link:  
+* https://www.kaggle.com/datasets/pixi252/yolo-playground-videos
+
+---
+
+## 🎥 Output Videos
+
+Sample output videos generated from the model can be viewed here:
+
+🔗 Google Drive Link:  
+* https://drive.google.com/drive/folders/1AQgBdXm_ax5ACJaBIYUJgIvDgAa8x4rB?usp=drive_link
+
+--- 
+
+
 ## 🎥 Demo
 
 ### Object Detection Results
